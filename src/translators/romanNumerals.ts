@@ -33,8 +33,8 @@ export function convertToInteger(num: string) {
     let result = 0;
     let prev = 0;
 
-    for (let digit of num.split('').reverse()) {
-        let curr = SYMBOL_NUMBERS.find(s => s.symbol === digit)
+    for (const digit of num.split('').reverse()) {
+        const curr = SYMBOL_NUMBERS.find(s => s.symbol === digit)
         if (!curr) {
             continue;
         }
