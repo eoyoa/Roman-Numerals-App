@@ -1,8 +1,17 @@
 import Translator from "./Translator.tsx";
-import {render} from "@testing-library/react";
+import {render, screen} from "@testing-library/react";
+import {userEvent} from "@testing-library/user-event";
 
 describe('Translator Component', () => {
-    test('Render input fields and translate button correctly', () => {
+    test('convert roman numeral to integer test', async () => {
+        const user = userEvent.setup();
+
         render(<Translator />);
+
+        await user.type(screen.getByRole("textbox", { name: "Roman numeral" }), "I")
+
+        await user.click(screen.getByRole("button"));
+
+        expect(screen.getByRole("textbox", { name: "Integer" })).toHaveTextContent("1")
     })
 })
