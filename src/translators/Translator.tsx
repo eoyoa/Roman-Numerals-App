@@ -9,14 +9,14 @@ function Translator() {
 
     function handleTranslate() {
         switch (toTranslate) {
-            case "int":
+            case "int": {
                 // convert from roman to int
-                setInt(convertToInteger(romanNum) + "")
-                break;
-            case "rom":
+                return setInt(convertToInteger(romanNum).toString())
+            }
+            case "rom": {
                 // convert from int to roman
-                setRomanNum(convertToRomanNumeral(parseInt(int)))
-                break;
+                return setRomanNum(convertToRomanNumeral(parseInt(int)))
+            }
         }
     }
 
