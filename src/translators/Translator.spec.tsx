@@ -12,6 +12,6 @@ describe('Translator Component', () => {
 
         await user.click(screen.getByRole("button"));
 
-        expect(screen.getByRole("textbox", { name: "Integer" })).toHaveTextContent("1")
+        expect(screen.getByRole("textbox", { name: "Integer" })).toHaveValue("1")
     })
 })
