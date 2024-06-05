@@ -1,33 +1,47 @@
-import {Box, TextField} from "@mui/material";
-import {convertToInteger, convertToRomanNumeral} from "./romanNumerals.ts";
-import { useReducer } from 'react';
+import {Box, Button, TextField} from "@mui/material";
+import {ChangeEvent, useCallback, useReducer, useState} from 'react';
+import {translatorReducer} from "./TranslatorReducer.ts";
 
 function Translator() {
-    // const [romanNum, setRomanNum] = useState("");
-    // const [int, setInt] = useState("");
-    // const [toTranslate, setToTranslate] = useState("");
+    // TODO: why does it render multiple times?
+    const [int, setInt] = useState(0);
+    const [roman, setRoman] = useState("");
+    const [toTranslate, setToTranslate] = useState("");
 
-    const [ numbers, dispatch ] = useReducer(translatorReducer, {
-        romanNum: '',
-        int: ''
-    });
+    const handleRoman = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+        setRoman(e.currentTarget.value);
+        setToTranslate("toInt");
+    }, [setRoman]);
 
-    function translatorReducer(_: unknown, action: { [key: string]: string | number }) {
-        switch (action.type) {
-            case 'convert roman numeral': {
-                const convertedNum = convertToInteger(action.romanNum as string);
-                return {
-                    romanNum: action.romanNum,
-                    int: convertedNum === 0 ? '' : convertedNum
-                }
+    const handleInt = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+        setInt(Number(e.currentTarget.value));
+        setToTranslate("toRoman");
+    }, [setInt])
+
+    const [request, dispatch] = useReducer(translatorReducer, {
+        isFinished: false,
+        roman: roman,
+        int: int,
+    })
+
+    const handleClick = useCallback(() => {
+        dispatch({
+            type: "translate",
+            request: toTranslate === "toInt" ? {
+                type: "convertRomanToInt",
+                roman: roman,
+            } : {
+                type: "convertIntToRoman",
+                int: int
             }
-            case 'convert integer': {
-                return {
-                    int: action.int === 0 ? '' : action.int,
-                    romanNum: convertToRomanNumeral(action.int as number)
-                }
-            }
-        }
+        })}, [dispatch, toTranslate, int, roman]);
+
+    if (request.isFinished) {
+        setRoman(request.roman)
+        setInt(request.int)
+        dispatch({
+            type: "finish"
+        })
     }
 
     return (
@@ -37,31 +51,24 @@ function Translator() {
                     id="roman-numeral"
                     label="Roman numeral"
                     variant="outlined"
-                    value={numbers?.romanNum}
-                    onChange={e => {
-                        dispatch(
-                            // "action" object:
-                            {
-                                type: 'convert roman numeral',
-                                romanNum: e.target.value
-                            }
-                        );
-                    }} />
+                    value={roman}
+                    onChange={ handleRoman }
+                />
                 <TextField
                     id="integer"
                     label="Integer"
                     variant="outlined"
-                    value={numbers?.int}
-                    onChange={e => {
-                        dispatch(
-                            // "action" object:
-                            {
-                                type: 'convert integer',
-                                int: e.target.value,
-                            }
-                        );
-                    }}
+                    value={int}
+                    onChange={ handleInt }
                 />
+            </Box>
+            <Box>
+                <Button
+                    variant="contained"
+                    onClick={ handleClick }
+                >
+                    Translate
+                </Button>
             </Box>
         </Box>
     );
