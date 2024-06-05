@@ -22,11 +22,29 @@ public class RomanNumeralController : Controller
     }
 
     [HttpPost("romanToInteger")]
-    public IActionResult convertRomanToInteger([FromBody] ConvertRomanToIntRequest request)
+    public IActionResult ConvertRomanToInteger([FromBody] ConvertRomanToIntRequest request)
     {
         return Ok(new UpdatedStateResponse
         {
-            Integer = RomanNumerals.ConvertToInteger(request.Roman)
+            IsFinished = true,
+            Integer = RomanNumerals.ConvertToInteger(request.Roman),
+            Roman = request.Roman
+        });
+    }
+
+    public record ConvertIntToRomanRequest
+    {
+        public int Integer { set; get; }
+    }
+
+    [HttpPost("integerToRoman")]
+    public IActionResult ConvertIntegerToRoman([FromBody] ConvertIntToRomanRequest request)
+    {
+        return Ok(new UpdatedStateResponse
+        {
+            IsFinished = true,
+            Roman = RomanNumerals.ConvertToRomanNumeral(request.Integer),
+            Integer = request.Integer
         });
     }
 

@@ -4,14 +4,13 @@ using Microsoft.AspNetCore.Mvc.Testing;
 
 namespace Roman.Web.Tests;
 
-public class RomanToIntegerEndpointTest
+public class IntegerToRomanEndpointTest
 {
     private readonly WebApplicationFactory<Program> _factory;
     private readonly HttpClient _client;
 
-    public RomanToIntegerEndpointTest()
+    public IntegerToRomanEndpointTest()
     {
-        // making a mock client
         _factory = new WebApplicationFactory<Program>();
         _client = _factory.CreateClient();
     }
@@ -19,16 +18,15 @@ public class RomanToIntegerEndpointTest
     [Fact]
     public async Task TestEndpointOk()
     {
-        // make the mock response
-        var response = await _client.PostAsJsonAsync("/convert/romanToInteger", new
+        // make mock response
+        var response = await _client.PostAsJsonAsync("/convert/integerToRoman", new
         {
-            roman = "I"
+            Integer = 1
         });
         
-        // check response
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
     }
-
+    
     [Theory]
     [InlineData(1, "I")]
     [InlineData(5, "V")]
@@ -39,12 +37,11 @@ public class RomanToIntegerEndpointTest
     [InlineData(1000, "M")]
     public async Task TestSingleSymbol(int value, string symbol)
     {
-        // make the mock response
-        var response = await _client.PostAsJsonAsync("/convert/romanToInteger", new
+        var response = await _client.PostAsJsonAsync("/convert/integerToRoman", new
         {
-            Roman = symbol
+            Integer = value
         });
-        
+
         // check response
         var content = await response.Content.ReadFromJsonAsync<RomanNumeralController.UpdatedStateResponse>();
         Assert.Equal(new RomanNumeralController.UpdatedStateResponse {
