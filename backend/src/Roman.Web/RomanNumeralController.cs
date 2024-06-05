@@ -15,13 +15,18 @@ public class RomanNumeralController : Controller
     // {
     //     _romanNumerals = romanNumerals;
     // }
+    
+    public record ConvertRomanToIntRequest
+    {
+        public string Roman { get; set; } = "";
+    }
 
     [HttpPost("romanToInteger")]
-    public IActionResult convertRomanToInteger()
+    public IActionResult convertRomanToInteger([FromBody] ConvertRomanToIntRequest request)
     {
         return Ok(new UpdatedStateResponse
         {
-            Integer = 1
+            Integer = RomanNumerals.ConvertToInteger(request.Roman)
         });
     }
 
