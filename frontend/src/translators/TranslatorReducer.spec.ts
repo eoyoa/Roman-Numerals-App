@@ -1,45 +1,36 @@
-import {TranslateRequest, translatorReducer} from "./TranslatorReducer.ts";
+import {BackendSuccessRequest, translatorReducer} from "./TranslatorReducer.ts";
 
 describe("Translator Reducer", () => {
-    test("Conversion request from roman to integer returns a proper state", () => {
-        const fakeRequest : TranslateRequest = {
-            type: "translate",
-            request: {
-                type: 'convertRomanToInt',
-                roman: "I"
-            }
-        }
+    test("Conversion request returns a proper state", () => {
         const fakeInitialState = {
-            isFinished: false,
-            roman: "",
-            int: 0
+            isLoading: false,
+            roman: "III",
+            int: 3
         }
 
-        expect(translatorReducer(fakeInitialState,fakeRequest)).toEqual({
-            isFinished: true,
-            roman: "I",
-            int: 1
-        })
+        expect(translatorReducer(fakeInitialState,{ type: "Conversion" })).toEqual({
+            isLoading: true,
+            roman: "III",
+            int: 3
+        });
     })
 
-    test("Conversion request from integer to roman returns a proper state", () => {
-        const fakeRequest : TranslateRequest = {
-            type: "translate",
-            request: {
-                type: 'convertIntToRoman',
-                int: 1
-            }
-        }
+    test("Successful response from backend returns a proper state", () => {
         const fakeInitialState = {
-            isFinished: false,
+            isLoading: true,
             roman: "",
-            int: 0
+            int: 1
+        };
+        const fakeRequest : BackendSuccessRequest = {
+            type: "BackendSuccess",
+            roman: "II",
+            int: 2
         }
 
         expect(translatorReducer(fakeInitialState,fakeRequest)).toEqual({
-            isFinished: true,
-            roman: "I",
-            int: 1
+            isLoading: false,
+            roman: "II",
+            int: 2
         })
     })
 })

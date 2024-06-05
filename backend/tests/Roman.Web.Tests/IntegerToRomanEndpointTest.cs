@@ -45,7 +45,6 @@ public class IntegerToRomanEndpointTest
         // check response
         var content = await response.Content.ReadFromJsonAsync<RomanNumeralController.UpdatedStateResponse>();
         Assert.Equal(new RomanNumeralController.UpdatedStateResponse {
-            IsFinished = true,
             Roman = symbol,
             Integer = value
         }, content);

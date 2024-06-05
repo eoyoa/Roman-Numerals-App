@@ -26,7 +26,6 @@ public class RomanNumeralController : Controller
     {
         return Ok(new UpdatedStateResponse
         {
-            IsFinished = true,
             Integer = RomanNumerals.ConvertToInteger(request.Roman),
             Roman = request.Roman
         });
@@ -42,7 +41,6 @@ public class RomanNumeralController : Controller
     {
         return Ok(new UpdatedStateResponse
         {
-            IsFinished = true,
             Roman = RomanNumerals.ConvertToRomanNumeral(request.Integer),
             Integer = request.Integer
         });
@@ -50,7 +48,6 @@ public class RomanNumeralController : Controller
 
     public record UpdatedStateResponse
     {
-        public bool IsFinished { get; set; }
         public string Roman { get; set; } = "";
         public int Integer { get; set; }
     }
