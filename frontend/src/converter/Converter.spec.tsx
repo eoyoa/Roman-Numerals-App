@@ -65,14 +65,19 @@ describe('Converter Component', () => {
     })
 
     test('textboxes disable after click convert', async () => {
-        server.use(http.post("http://localhost:5000/convert/romanToInteger", () => {
-            return HttpResponse.json();
+        server.use(http.post("http://localhost:5000/convert/romanToInteger", async () => {
+            return HttpResponse.json({
+                roman: "II",
+                integer: 2
+            });
         }));
         const user = userEvent.setup();
 
         user.click(screen.getByRole("button")).then(async () => {
-            expect(screen.getByRole("textbox", { name: "Roman numeral" })).toBeDisabled();
-            expect(screen.getByRole("textbox", { name: "Integer" })).toBeDisabled();
+            await waitFor(() => {
+                expect(screen.getByRole("textbox", { name: "Roman numeral" })).toBeDisabled();
+                expect(screen.getByRole("textbox", {name: "Integer"})).toBeDisabled()
+            })
         })
     })
 
