@@ -66,8 +66,6 @@ function Converter() {
         }
     }, [backendRequestState.conversionEndpoint, backendRequestState.int, backendRequestState.roman]);
 
-    console.log(backendRequestState);
-
     return (
         <Box>
             <Box>
