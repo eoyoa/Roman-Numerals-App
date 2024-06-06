@@ -30,7 +30,6 @@ export function converterReducer(prev: RequestState, action: RequestAction): Req
             }
         }
         case "BackendSuccess": {
-            console.debug("success", action);
             return {
                 ...prev,
                 isLoading: false,
