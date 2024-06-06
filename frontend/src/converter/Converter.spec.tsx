@@ -1,13 +1,17 @@
 import Converter from "./Converter.tsx";
 import {render, screen, waitFor} from "@testing-library/react";
 import {userEvent} from "@testing-library/user-event";
-import {afterEach, beforeAll, expect} from "vitest";
+import {beforeAll, expect} from "vitest";
 import {server} from "../testing/mockBackend.ts";
 import {http, HttpResponse} from "msw";
 
 describe('Converter Component', () => {
     beforeEach(() => {
         render(<Converter />);
+
+        // This will remove any runtime request handlers
+        // after each test, ensuring isolated network behavior.
+        return server.resetHandlers();
     })
 
     beforeAll(() => {
@@ -15,12 +19,6 @@ describe('Converter Component', () => {
 
         // clean up function, called once after all tests run
         return server.close
-    })
-
-    afterEach(() => {
-        // This will remove any runtime request handlers
-        // after each test, ensuring isolated network behavior.
-        server.resetHandlers();
     })
 
     test('roman numeral to integer gives proper output', async () => {
