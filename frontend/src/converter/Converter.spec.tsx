@@ -6,6 +6,10 @@ import {server} from "../testing/mockBackend.ts";
 import {http, HttpResponse} from "msw";
 
 describe('Converter Component', () => {
+    beforeEach(() => {
+        render(<Converter />);
+    })
+
     beforeAll(() => {
         server.listen();
 
@@ -29,8 +33,6 @@ describe('Converter Component', () => {
 
         const user = userEvent.setup();
 
-        render(<Converter />);
-
         const expectedOutput = screen.getByRole("textbox", { name: "Integer" });
 
         await user.type(screen.getByRole("textbox", { name: "Roman numeral" }), "I")
@@ -52,7 +54,6 @@ describe('Converter Component', () => {
         }))
         const user = userEvent.setup();
 
-        render(<Converter />);
         const expectedElement = screen.getByRole("textbox", { name: "Roman numeral" })
 
         await user.type(screen.getByRole("textbox", { name: "Integer" }), "2")
@@ -69,8 +70,6 @@ describe('Converter Component', () => {
         }));
         const user = userEvent.setup();
 
-        render(<Converter />);
-
         user.click(screen.getByRole("button")).then(async () => {
             expect(screen.getByRole("textbox", { name: "Roman numeral" })).toBeDisabled();
             expect(screen.getByRole("textbox", { name: "Integer" })).toBeDisabled();
@@ -86,8 +85,6 @@ describe('Converter Component', () => {
         }));
         const user = userEvent.setup();
 
-        render(<Converter />);
-
         await user.click(screen.getByRole("button"));
 
         const romanNumeralTextbox = screen.getByRole("textbox", { name: "Roman numeral" });
@@ -98,5 +95,21 @@ describe('Converter Component', () => {
 
         expect(romanNumeralTextbox).toBeEnabled();
         expect(screen.getByRole("textbox", { name: "Integer" })).toBeEnabled();
+    })
+
+    test('convert button disabled after onClick', async () => {
+        server.use(http.post("http://localhost:5000/convert/romanToInteger", () => {
+            return HttpResponse.json({
+                roman: "II",
+                integer: 2,
+            })
+        }))
+
+        const user = userEvent.setup();
+
+        user.click(screen.getByRole("button")).then(async ()=> {
+            expect(screen.getByRole("button")).toBeDisabled();
+        })
+
     })
 })
