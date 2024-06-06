@@ -11,6 +11,12 @@ var app = builder.Build();
 
 app.UseRouting();
 app.MapControllers();
+app.UseCors(c =>
+{
+    c.AllowAnyOrigin();
+    c.AllowAnyMethod();
+    c.AllowAnyHeader();
+});
 
 app.Run();
 
