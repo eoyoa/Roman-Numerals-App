@@ -6,7 +6,7 @@ A full-stack implementation of the [Roman Numerals kata](https://github.com/upli
 
 To run the whole app locally, you must locally host the frontend and run a local backend server.
 
-For the frontend, run the `dev` script specified in package.json.
+For the frontend, run the `dev` script specified in `package.json`.
 
 For the backend, run the Roman.Web project using `dotnet`.
 
