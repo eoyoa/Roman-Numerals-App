@@ -15,6 +15,11 @@ public class RomanNumeralController : Controller
     // {
     //     _romanNumerals = romanNumerals;
     // }
+    public record UpdatedStateResponse
+    {
+        public string Roman { get; set; } = "";
+        public int Integer { get; set; }
+    }
     
     public record ConvertRomanToIntRequest
     {
@@ -44,11 +49,5 @@ public class RomanNumeralController : Controller
             Roman = RomanNumerals.ConvertToRomanNumeral(request.Integer),
             Integer = request.Integer
         });
-    }
-
-    public record UpdatedStateResponse
-    {
-        public string Roman { get; set; } = "";
-        public int Integer { get; set; }
     }
 }
