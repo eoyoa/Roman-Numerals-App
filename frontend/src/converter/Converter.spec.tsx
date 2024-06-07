@@ -1,16 +1,17 @@
 import Converter from "./Converter.tsx";
 import {render, screen, waitFor} from "@testing-library/react";
 import {userEvent} from "@testing-library/user-event";
-import {afterEach, beforeAll, expect} from "vitest";
+import {beforeAll, expect} from "vitest";
 import {server} from "../testing/mockBackend.ts";
-import {delay, http, HttpResponse} from "msw";
-import {createTheme, ThemeProvider} from "@mui/material";
+import {http, HttpResponse} from "msw";
 
 describe('Converter Component', () => {
     beforeEach(() => {
-        render(<ThemeProvider theme={createTheme()}>
-            <Converter />
-        </ThemeProvider>);
+        render(<Converter />);
+
+        // This will remove any runtime request handlers
+        // after each test, ensuring isolated network behavior.
+        return server.resetHandlers();
     })
 
     beforeAll(() => {
@@ -18,12 +19,6 @@ describe('Converter Component', () => {
 
         // clean up function, called once after all tests run
         return server.close
-    })
-
-    afterEach(() => {
-        // This will remove any runtime request handlers
-        // after each test, ensuring isolated network behavior.
-        server.resetHandlers();
     })
 
     test('roman numeral to integer gives proper output', async () => {
@@ -68,15 +63,18 @@ describe('Converter Component', () => {
     })
 
     test('textboxes disable after click convert', async () => {
-        server.use(http.post("http://localhost:5000/convert/romanToInteger", () => {
-            return HttpResponse.json();
+        server.use(http.post("http://localhost:5000/convert/romanToInteger", async () => {
+            return HttpResponse.json({
+                roman: "II",
+                integer: 2
+            });
         }));
         const user = userEvent.setup();
 
         user.click(screen.getByRole("button")).then(async () => {
-            await waitFor(()=> {
+            await waitFor(() => {
                 expect(screen.getByRole("textbox", { name: "Roman numeral" })).toBeDisabled();
-                expect(screen.getByRole("textbox", { name: "Integer" })).toBeDisabled();
+                expect(screen.getByRole("textbox", {name: "Integer"})).toBeDisabled()
             })
         })
     })
@@ -103,8 +101,7 @@ describe('Converter Component', () => {
     })
 
     test('convert button disabled after onClick', async () => {
-        server.use(http.post("http://localhost:5000/convert/romanToInteger", async () => {
-            await delay("infinite")
+        server.use(http.post("http://localhost:5000/convert/romanToInteger", () => {
             return HttpResponse.json({
                 roman: "II",
                 integer: 2,
@@ -113,9 +110,9 @@ describe('Converter Component', () => {
 
         const user = userEvent.setup();
 
-        await user.click(screen.getByRole("button"));
-
-        await waitFor(()=> expect(screen.getByRole("button")).toBeDisabled())
+        user.click(screen.getByRole("button")).then(async ()=> {
+            expect(screen.getByRole("button")).toBeDisabled();
+        })
 
     })
 })
