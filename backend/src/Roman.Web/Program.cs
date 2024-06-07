@@ -25,6 +25,12 @@ app.UseRouting();
 
 // Configure the web app to map incoming HTTP requests to controller actions
 app.MapControllers();
+app.UseCors(c =>
+{
+    c.AllowAnyOrigin();
+    c.AllowAnyMethod();
+    c.AllowAnyHeader();
+});
 
 app.UseCors(c =>
 {

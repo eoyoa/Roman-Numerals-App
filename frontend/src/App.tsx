@@ -1,11 +1,11 @@
 import './App.css'
-import Translator from "./translators/Translator.tsx";
+import Converter from "./converter/Converter.tsx";
 
 function App() {
   return (
     <>
-      <h1>Roman Numeral Translator</h1>
-        <Translator />
+      <h1>Roman Numeral Converter</h1>
+        <Converter />
     </>
   )
 }
