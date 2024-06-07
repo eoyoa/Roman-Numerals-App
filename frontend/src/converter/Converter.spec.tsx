@@ -3,11 +3,14 @@ import {render, screen, waitFor} from "@testing-library/react";
 import {userEvent} from "@testing-library/user-event";
 import {afterEach, beforeAll, expect} from "vitest";
 import {server} from "../testing/mockBackend.ts";
-import {http, HttpResponse} from "msw";
+import {delay, http, HttpResponse} from "msw";
+import {createTheme, ThemeProvider} from "@mui/material";
 
 describe('Converter Component', () => {
     beforeEach(() => {
-        render(<Converter />);
+        render(<ThemeProvider theme={createTheme()}>
+            <Converter />
+        </ThemeProvider>);
     })
 
     beforeAll(() => {
@@ -71,8 +74,10 @@ describe('Converter Component', () => {
         const user = userEvent.setup();
 
         user.click(screen.getByRole("button")).then(async () => {
-            expect(screen.getByRole("textbox", { name: "Roman numeral" })).toBeDisabled();
-            expect(screen.getByRole("textbox", { name: "Integer" })).toBeDisabled();
+            await waitFor(()=> {
+                expect(screen.getByRole("textbox", { name: "Roman numeral" })).toBeDisabled();
+                expect(screen.getByRole("textbox", { name: "Integer" })).toBeDisabled();
+            })
         })
     })
 
@@ -98,7 +103,8 @@ describe('Converter Component', () => {
     })
 
     test('convert button disabled after onClick', async () => {
-        server.use(http.post("http://localhost:5000/convert/romanToInteger", () => {
+        server.use(http.post("http://localhost:5000/convert/romanToInteger", async () => {
+            await delay("infinite")
             return HttpResponse.json({
                 roman: "II",
                 integer: 2,
@@ -107,9 +113,9 @@ describe('Converter Component', () => {
 
         const user = userEvent.setup();
 
-        user.click(screen.getByRole("button")).then(async ()=> {
-            expect(screen.getByRole("button")).toBeDisabled();
-        })
+        await user.click(screen.getByRole("button"));
+
+        await waitFor(()=> expect(screen.getByRole("button")).toBeDisabled())
 
     })
 })

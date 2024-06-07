@@ -62,7 +62,7 @@ function Converter() {
             }
             dispatch(successReq);
         } else {
-            // TODO: dispatch failure
+            // TODO: dispatch failure, look into what fetch throws when failure state
         }
     }, [backendRequestState.conversionEndpoint, backendRequestState.int, backendRequestState.roman]);
 
@@ -90,7 +90,7 @@ function Converter() {
                 <Button
                     variant="contained"
                     onClick={ handleClick }
-                    // TODO: if wifi cuts out, handle turning everything back on?
+                    // TODO: if wifi cuts out, handle turning .everything back on?
                     disabled={ backendRequestState.isLoading }
                 >
                     Convert
