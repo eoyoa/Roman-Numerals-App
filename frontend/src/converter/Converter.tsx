@@ -23,10 +23,14 @@ function Converter() {
 
     const handleRoman = useCallback((e: ChangeEvent<HTMLInputElement>) => {
         const inputValue = e.target.value;
-        const stringValue = isRomanLetters(inputValue) ? inputValue : "";
+
+        if (!isRomanLetters(inputValue)) {
+            return;
+        }
+
         dispatch({
             type: "UpdateLocal",
-            roman: stringValue,
+            roman: inputValue,
             int: backendRequestState.int,
             conversionEndpoint: "romanToInteger"
         })
@@ -34,7 +38,8 @@ function Converter() {
 
     const handleInt = useCallback((e: ChangeEvent<HTMLInputElement>) => {
         const inputValue = e.target.value;
-        const intValue = isNaN(parseInt(inputValue)) ? 0 : parseInt(inputValue);
+        const capturedInt = parseInt(inputValue);
+        const intValue = isNaN(capturedInt) ? 0 : capturedInt;
         dispatch({
             type: "UpdateLocal",
             roman: backendRequestState.roman,
@@ -85,6 +90,9 @@ function Converter() {
                 })
             }
         } catch (error) {
+            if (!(error instanceof Error)) {
+                return;
+            }
             dispatch({
                 type: "BackendFailure",
                 error: error.message
