@@ -10,10 +10,23 @@ function Converter() {
         conversionEndpoint: "romanToInteger"
     })
 
+    // helper method to handle validity of roman field input
+    function isRomanLetters(str: string) {
+        const romanNumerals = ["I", "V", "L", "C", "D", "M"];
+        for (let i = 0; i < str.length; i++) {
+            if (!romanNumerals.includes(str[i])) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     const handleRoman = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+        const inputValue = e.target.value;
+        const stringValue = isRomanLetters(inputValue) ? inputValue : "";
         dispatch({
             type: "UpdateLocal",
-            roman: e.target.value,
+            roman: stringValue,
             int: backendRequestState.int,
             conversionEndpoint: "romanToInteger"
         })
@@ -89,7 +102,6 @@ function Converter() {
                     value={ backendRequestState.roman }
                     onChange={ handleRoman }
                     disabled={ backendRequestState.isLoading }
-                    //error={ !(typeof backendRequestState.roman != "string") }
                 />
                 <TextField
                     id="integer"
@@ -98,7 +110,6 @@ function Converter() {
                     value={ backendRequestState.int }
                     onChange={ handleInt }
                     disabled = { backendRequestState.isLoading }
-                    //error={ !(typeof backendRequestState.int != "number") }
                 />
             </Box>
             <Box marginBottom={2}>
