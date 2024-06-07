@@ -1,20 +1,18 @@
 using Roman.Model;
 
 // Create a new instance of the 'WebApplicationBuilder' class
-var builder = WebApplication.CreateBuilder(args); // args: command-line arguments
-
-// Configure the services collection of the builder to include MVC services
-// MVC (Model-View-Controller design pattern)
+var builder = WebApplication.CreateBuilder(args); 
+ 
+// MVC Services (Model-View-Controller design pattern)
 builder.Services.AddMvc();
 
-// Configure the services collection of the builder to include routing services
-// Routing: mapping incoming HTTP requests to the corresponding controller actions
+// Include Routing Services: mapping incoming HTTP requests to the corresponding controller actions
 builder.Services.AddRouting();
 
 // if RomanNumerals is static -> cannot be instantiated, all members are static and accessible globally
 // if RomanNumerals is not static:
 // builder.Services.AddTransient<RomanNumerals>();
-// Dependency injection, allow to control lifetime of each istances
+// Dependency injection, allow to control lifetime of each instance
 // Whenever a component in the application requests an instance of RomanNumerals, a new instance will be created
 
 // Build the 'WebApplication' instance 'app' with the configured services defined above in the 'builder'
@@ -30,13 +28,6 @@ app.UseCors(c =>
     c.AllowAnyOrigin();
     c.AllowAnyMethod();
     c.AllowAnyHeader();
-});
-
-app.UseCors(c =>
-{
-    c.AllowAnyMethod();
-    c.AllowAnyHeader();
-    c.AllowAnyOrigin();
 });
 
 // Start the web app and begins listening for incoming HTTP requests
