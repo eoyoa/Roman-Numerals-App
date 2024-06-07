@@ -1,6 +1,12 @@
-import {BackendSuccessRequest, Endpoint, converterReducer, UpdateLocalRequest} from "./ConverterReducer.ts";
+import {
+    BackendSuccessRequest,
+    Endpoint,
+    converterReducer,
+    UpdateLocalRequest,
+    BackendFailureRequest
+} from "./ConverterReducer.ts";
 
-describe("Converter Reducer", () => {
+describe("Converter Reducer", async () => {
     test("Conversion request returns a proper state", () => {
         const fakeInitialState = {
             isLoading: false,
@@ -15,7 +21,7 @@ describe("Converter Reducer", () => {
         });
     })
 
-    test("Successful response from backend returns a proper state", () => {
+    test("Successful response from backend returns a proper state", async () => {
         const fakeInitialState = {
             isLoading: true,
             roman: "",
@@ -38,7 +44,7 @@ describe("Converter Reducer", () => {
     test.each([
         [ "III", 2, "romanToInteger" as Endpoint ],
         [ "I", 3, "integerToRoman" as Endpoint ]
-    ])("Update local values to {%s, %s, %s} correctly fixes state", ( newRoman, newInt, newEndpoint) => {
+    ])("Update local values to {%s, %s, %s} correctly fixes state", async ( newRoman, newInt, newEndpoint) => {
         const fakeInitialState = {
             isLoading: false,
             roman: "II",
@@ -57,6 +63,23 @@ describe("Converter Reducer", () => {
             roman: newRoman,
             int: newInt,
             conversionEndpoint: newEndpoint
+        })
+    })
+
+    test("BackendFailure action disables loading and does not change previous state", async () => {
+        const fakeInitialState = {
+            isLoading: true,
+            roman: "II",
+            int: 4,
+            conversionEndpoint: "integerToRoman" as Endpoint
+        }
+        const fakeRequest : BackendFailureRequest = {
+            type: "BackendFailure",
+            error: "test error"
+        }
+        expect(converterReducer(fakeInitialState, fakeRequest)).toEqual({
+            ...fakeInitialState,
+            isLoading: false
         })
     })
 })
