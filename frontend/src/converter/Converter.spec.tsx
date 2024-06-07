@@ -7,11 +7,16 @@ import {http, HttpResponse} from "msw";
 
 describe('Converter Component', () => {
     let user: UserEvent;
+    let romanNumeralTextField: HTMLElement;
+    let integerTextField: HTMLElement;
+    let convertButton: HTMLElement;
 
     beforeEach(() => {
         render(<Converter />);
-
         user = userEvent.setup();
+        romanNumeralTextField = screen.getByRole("textbox", { name: "Roman numeral" });
+        integerTextField = screen.getByRole("textbox", { name: "Integer" });
+        convertButton = screen.getByRole("button");
 
         // This will remove any runtime request handlers
         // after each test, ensuring isolated network behavior.
@@ -33,16 +38,14 @@ describe('Converter Component', () => {
             });
         }));
 
-        const expectedOutput = screen.getByRole("textbox", { name: "Integer" });
-
-        await user.type(screen.getByRole("textbox", { name: "Roman numeral" }), "I")
-        await user.click(screen.getByRole("button"));
+        await user.type(romanNumeralTextField, "I")
+        await user.click(convertButton);
 
         // wait for textbox to turn off, then turn back on
-        await waitFor(() => expect(expectedOutput).toBeEnabled())
+        await waitFor(() => expect(integerTextField).toBeEnabled())
 
         // expect it to have proper value after on
-        expect(expectedOutput).toHaveValue("1")
+        expect(integerTextField).toHaveValue("1")
     })
 
     test('integer to roman numeral gives proper output', async () => {
@@ -53,14 +56,12 @@ describe('Converter Component', () => {
             })
         }))
 
-        const expectedElement = screen.getByRole("textbox", { name: "Roman numeral" })
+        await user.type(integerTextField, "2")
+        await user.click(convertButton);
 
-        await user.type(screen.getByRole("textbox", { name: "Integer" }), "2")
-        await user.click(screen.getByRole("button"))
+        await waitFor(() => {expect(romanNumeralTextField).toBeEnabled()})
 
-        await waitFor(() => {expect(expectedElement).toBeEnabled()})
-
-        expect(expectedElement).toHaveValue("II")
+        expect(romanNumeralTextField).toHaveValue("II")
     })
 
     test('textboxes disable after click convert', async () => {
@@ -71,9 +72,9 @@ describe('Converter Component', () => {
             });
         }));
 
-        user.click(screen.getByRole("button")).then(async () => {
+        user.click(convertButton).then(async () => {
             await waitFor(() => {
-                expect(screen.getByRole("textbox", { name: "Roman numeral" })).toBeDisabled();
+                expect(romanNumeralTextField).toBeDisabled();
                 expect(screen.getByRole("textbox", {name: "Integer"})).toBeDisabled()
             })
         })
@@ -87,16 +88,14 @@ describe('Converter Component', () => {
             });
         }));
 
-        await user.click(screen.getByRole("button"));
-
-        const romanNumeralTextbox = screen.getByRole("textbox", { name: "Roman numeral" });
+        await user.click(convertButton);
 
         await waitFor(() => {
-            expect(romanNumeralTextbox).toHaveValue("II");
+            expect(romanNumeralTextField).toHaveValue("II");
         })
 
-        expect(romanNumeralTextbox).toBeEnabled();
-        expect(screen.getByRole("textbox", { name: "Integer" })).toBeEnabled();
+        expect(romanNumeralTextField).toBeEnabled();
+        expect(integerTextField).toBeEnabled();
     })
 
     test('convert button disabled after onClick', async () => {
@@ -107,9 +106,9 @@ describe('Converter Component', () => {
             })
         }))
 
-        user.click(screen.getByRole("button")).then(async ()=> {
+        user.click(convertButton).then(async ()=> {
             await waitFor(() => {
-                expect(screen.getByRole("button")).toBeDisabled();
+                expect(convertButton).toBeDisabled();
             })
         })
 
@@ -120,32 +119,28 @@ describe('Converter Component', () => {
             return HttpResponse.error();
         }))
 
-        const romanNumeralBox = screen.getByRole("textbox", { name: "Roman numeral" });
-        const integerBox = screen.getByRole("textbox", { name: "Integer" });
-        const convertButton = screen.getByRole("button");
-
-        await user.type(romanNumeralBox, "II");
-        await user.type(integerBox, "3");
+        await user.type(romanNumeralTextField, "II");
+        await user.type(integerTextField, "3");
         await user.click(convertButton);
 
-        expect(romanNumeralBox).toHaveValue("II");
-        expect(integerBox).toHaveValue("3");
+        expect(romanNumeralTextField).toHaveValue("II");
+        expect(integerTextField).toHaveValue("3");
 
         await waitFor(()=> {
-            expect(romanNumeralBox).toBeEnabled()
-            expect(integerBox).toBeEnabled()
+            expect(romanNumeralTextField).toBeEnabled()
+            expect(integerTextField).toBeEnabled()
             expect(convertButton).toBeEnabled()
         });
     })
 
     test("int becomes 0 when invalid input to int text field", async () => {
-        await user.type(screen.getByRole("textbox", { name: "Integer" }), "a");
-        expect(screen.getByRole("textbox", { name: "Integer" })).toHaveValue("0")
+        await user.type(integerTextField, "a");
+        expect(integerTextField).toHaveValue("0")
     })
 
     test("previous state does not change when invalid input to roman text field", async () => {
-        await user.type(screen.getByRole("textbox", { name: "Roman numeral" }), "II");
-        await user.type(screen.getByRole("textbox", { name: "Roman numeral" }), "p");
-        expect(screen.getByRole("textbox", { name: "Roman numeral" })).toHaveValue("II")
+        await user.type(romanNumeralTextField, "II");
+        await user.type(romanNumeralTextField, "p");
+        expect(romanNumeralTextField).toHaveValue("II")
     })
 })
