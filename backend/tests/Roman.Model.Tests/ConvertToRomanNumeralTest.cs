@@ -2,6 +2,12 @@ namespace Roman.Model.Tests;
 
 public class ConvertToRomanNumeralTest
 {
+    // assert helper method
+    private static void AssertCorrectConversion(int value, string expectedSymbol)
+    {
+        Assert.Equal(expectedSymbol, RomanNumerals.ConvertToRomanNumeral(value));
+    }
+    
     [Theory]
     [InlineData(1, "I")]
     [InlineData(5, "V")]
@@ -12,9 +18,9 @@ public class ConvertToRomanNumeralTest
     [InlineData(1000, "M")]
     public void TestSingleSymbolNumbers(int value, string expectedSymbol)
     {
-        Assert.Equal(expectedSymbol, RomanNumerals.ConvertToRomanNumeral(value));
+        AssertCorrectConversion(value, expectedSymbol);
     }
-    
+
     [Theory]
     [InlineData(2, "II")]
     [InlineData(3, "III")]
@@ -25,8 +31,7 @@ public class ConvertToRomanNumeralTest
     [InlineData(20, "XX")]
     public void TestAppendToTheBack(int value, string expectedSymbol) 
     {
-        Assert.Equal(expectedSymbol, RomanNumerals.ConvertToRomanNumeral(value));
-    }
+        AssertCorrectConversion(value, expectedSymbol);    }
 
     [Theory]
     [InlineData(4, "IV")]
@@ -38,8 +43,7 @@ public class ConvertToRomanNumeralTest
     [InlineData(999, "CMXCIX")]
     public void TestInsertToFront(int value, string expectedSymbol)
     {
-        Assert.Equal(expectedSymbol, RomanNumerals.ConvertToRomanNumeral(value));
-    }
+        AssertCorrectConversion(value, expectedSymbol);    }
     
     [Theory]
     [InlineData(857, "DCCCLVII")]
@@ -50,6 +54,5 @@ public class ConvertToRomanNumeralTest
     [InlineData(495, "CDXCV")]
     public void TestRandomNumberGenerator(int value, string expectedSymbol)
     {
-        Assert.Equal(expectedSymbol, RomanNumerals.ConvertToRomanNumeral(value));
-    }
+        AssertCorrectConversion(value, expectedSymbol);    }
 }
