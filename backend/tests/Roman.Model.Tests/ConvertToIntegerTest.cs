@@ -2,6 +2,12 @@ namespace Roman.Model.Tests;
 
 public class ConvertToIntegerTest
 {
+    // assert helper method
+    private static void AssertCorrectConversion(int expectedValue, string symbol)
+    {
+        Assert.Equal(expectedValue, RomanNumerals.ConvertToInteger(symbol));
+    }
+    
     [Theory]
     [InlineData(1, "I")]
     [InlineData(5, "V")]
@@ -12,7 +18,7 @@ public class ConvertToIntegerTest
     [InlineData(1000, "M")]
     public void TestSingleSymbolNumbers(int expectedValue, string symbol)
     {
-        Assert.Equal(expectedValue, RomanNumerals.ConvertToInteger(symbol));
+        AssertCorrectConversion(expectedValue, symbol);
     }
 
     [Theory]
@@ -21,7 +27,7 @@ public class ConvertToIntegerTest
     [InlineData(20, "XX")]
     public void TestSameDigits(int expectedValue, string symbol)
     {
-        Assert.Equal(expectedValue, RomanNumerals.ConvertToInteger(symbol));
+        AssertCorrectConversion(expectedValue, symbol);
     }
     
     [Theory]
@@ -31,7 +37,7 @@ public class ConvertToIntegerTest
     [InlineData(1006, "MVI")]
     public void TestDifferentDigits(int expectedValue, string symbol)
     {
-        Assert.Equal(expectedValue, RomanNumerals.ConvertToInteger(symbol));
+        AssertCorrectConversion(expectedValue, symbol);
     }
     
     [Theory]
@@ -41,7 +47,7 @@ public class ConvertToIntegerTest
     [InlineData(900, "CM")]
     public void TestPrefixedDigits(int expectedValue, string symbol)
     {
-        Assert.Equal(expectedValue, RomanNumerals.ConvertToInteger(symbol));
+        AssertCorrectConversion(expectedValue, symbol);
     }
     
     [Theory]
@@ -53,7 +59,7 @@ public class ConvertToIntegerTest
     [InlineData(495, "CDXCV")]
     public void TestRandomNumberGenerator(int expectedValue, string symbol)
     {
-        Assert.Equal(expectedValue, RomanNumerals.ConvertToInteger(symbol));
+        AssertCorrectConversion(expectedValue, symbol);
     }
     
 }
