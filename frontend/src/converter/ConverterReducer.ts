@@ -19,31 +19,27 @@ export type UpdateLocalRequest = {
     int: number,
     conversionEndpoint: Endpoint,
 }
-type RequestAction = ConversionRequest | BackendSuccessRequest | UpdateLocalRequest;
+export type BackendFailureRequest = {
+    type: "BackendFailure",
+    error: string,
+}
+type RequestAction = ConversionRequest | BackendSuccessRequest | UpdateLocalRequest | BackendFailureRequest;
 
 export function converterReducer(prev: RequestState, action: RequestAction): RequestState {
     switch (action.type) {
         case "Conversion": {
-            return {
-                ...prev,
-                isLoading: true,
-            }
+            return { ...prev, isLoading: true }
         }
         case "BackendSuccess": {
-            return {
-                ...prev,
-                isLoading: false,
-                roman: action.roman,
-                int: action.int
-            }
+            return { ...prev, isLoading: false, roman: action.roman, int: action.int }
         }
         case "UpdateLocal": {
-            return {
-                ...prev,
-                roman: action.roman,
-                int: action.int,
-                conversionEndpoint: action.conversionEndpoint
-            }
+            return { ...prev, roman: action.roman, int: action.int, conversionEndpoint: action.conversionEndpoint }
         }
+        case "BackendFailure": {
+            return { ...prev, isLoading: false }
+        }
+        default:
+            return prev
     }
 }
